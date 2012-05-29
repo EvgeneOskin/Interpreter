@@ -194,7 +194,7 @@ int main()
 					error_INDEX++;
 					break;
 				}
-		if ((str[i] == '+') || (str[i] == '-') || (str[i] == '/') || (str[i] == '*') || (str[i] == '.') && (str[i-1] == str[i]) && (i != 0))
+		if (((str[i] == '+') || (str[i] == '-') || (str[i] == '/') || (str[i] == '*') || (str[i] == '.')) && (str[i-1] == str[i]) && (i != 0))
 		{	
 			cout << "too much operations in coloumn " << i-1 << endl; 
 			error_INDEX++;
