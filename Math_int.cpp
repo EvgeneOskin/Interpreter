@@ -180,7 +180,7 @@ int main()
 	if ((str[0] == '+') || (str[0] == '-') || (str[0] == '/') || (str[0] == '*') || (str[0] == ')') || (str[0] == '.'))
 	{	
 		error_INDEX++;
-		cout << "i don't understand you\n"; 
+		cout << "i don't understand you" << endl; 
 	}
 	for (i=0; i<size_str; i++)
 	{
@@ -190,20 +190,20 @@ int main()
 			if (str[i] == ')')	
 				if(--braket_INDEX<0)
 				{
-					cout << "braket error in coloumn "<< i-1; 
+					cout << "braket error in coloumn "<< i-1 << endl; 
 					error_INDEX++;
 					break;
 				}
 		if ((str[i] == '+') || (str[i] == '-') || (str[i] == '/') || (str[i] == '*') || (str[i] == '.') && (str[i-1] == str[i]) && (i != 0))
 		{	
-			cout << "too much operations in coloumn " << i-1; 
+			cout << "too much operations in coloumn " << i-1 << endl; 
 			error_INDEX++;
 			break;
 		}
 	}
 	if (braket_INDEX != 0)	
 	{
-		cout << "braket error in coloumn " << i-1;
+		cout << "braket error in coloumn " << i-1 << endl;
 		error_INDEX++;	
 	}
 	if (error_INDEX == 0)	
