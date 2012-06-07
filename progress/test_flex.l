@@ -3,13 +3,17 @@
 %}
 
 %%
-"+"|"-"|"*"|"/"    { return yytext[0]; }
-"*("|")*"          { printf("you type a bracket with multiple"); }
-"quit"             { return QUIT; }
+"*"                {  return yytext[0]; }
+"*("               {  return OP;  }
+")*"               {  return CP; }
+"+"|"-"|"/"|")"|"("  {  return yytext[0]; }
+"quit"             {
+                     return QUIT; }
 [a-zA-Z]           {
                      yylval.v = yytext [0];
                      return VARS;
                     }  
-\n                  { return EOL; }
+\n                  {
+                     return EOL; }
 [ \t]               {}
-.                   { printf ("I don't understandem what you want\n %s", yytext); }
+.                   { printf ("I don't understand what you want\n> ", yytext); }

@@ -3,9 +3,9 @@
 #  include <stdarg.h>
 #  include "test_DEF.h"
 
-struct ast* newast(int nodetype, struct ast *l, struct ast *r)
+struct ast* newast(int nodetype, struct ast* l, struct ast* r)
 {
-  struct ast *a = malloc(sizeof(struct ast));
+  struct ast* a = malloc(sizeof(struct ast));
   
   if(!a) {
     yyerror("out of space");
@@ -18,7 +18,7 @@ struct ast* newast(int nodetype, struct ast *l, struct ast *r)
 }
 struct ast* newvar(char v)
 {
-  struct numval *a = malloc(sizeof(struct numval));
+  struct numval* a = malloc(sizeof(struct numval));
   
   if (!a) 
   {
@@ -27,44 +27,27 @@ struct ast* newvar(char v)
   }
   a->nodetype = 'K';
   a->var = v;
-  return (struct ast *) a;
+  return (struct ast* ) a;
 }
 
-void eval(struct ast *a)
+void eval(struct ast* a)
 {
   switch (a->nodetype) {
   case 'K': 
     {
-      printf ("%c", ((struct numval *)a)->var); break;
+      printf ("%c", ((struct numval* )a)->var); 
+      break;
     }
   case '+':
-    {
-      eval(a->l);
-      printf("+");
-      eval(a->r); 
-      break;
-    }  
   case '-': 
-    {
-      eval(a->l);
-      printf("-");
-      eval(a->r); 
-      break;
-    } 
   case '*':
-    {
-      eval(a->l);
-      printf("*");
-      eval(a->r); 
-      break;
-    } 
   case '/': 
     {
       eval(a->l);
-      printf("/");
+      printf("%c",a->nodetype);
       eval(a->r); 
       break;
-    }
+    }  
   case 'M': 
     {
       printf("(-"); 
@@ -72,11 +55,47 @@ void eval(struct ast *a)
       printf(")"); 
       break;
     }
-  default: printf("internal error: bad node %c\n", a->nodetype);
+  case 'm':
+  case 'c':
+  case 'o':
+    {
+      if (bracket_INDEX != 0)
+      {
+        mult = newast(a->nodetype,a->l,a->l);
+        bracket_INDEX--;
+      }
+      printf("(");
+      eval(mult->l);
+      printf("*");
+      eval(a->r);
+      printf(")");
+      break;
+    }
+  case 'p':
+    {
+      eval(a->l);
+      printf("+");
+      eval(mult->l);
+      printf("*");
+      eval(a->r);
+      break;
+    }
+  case 'n':
+    {
+      eval(mult->l);
+      printf("*");
+      eval(a->l);
+      printf("-");
+      eval(mult->l);
+      printf("*");
+      eval(a->r);
+      break;
+    }
+  default: printf("\ninternal error: bad node %c\n", a->nodetype);
   }
 }
 
-void treefree(struct ast *a)
+void treefree(struct ast* a)
 {
   switch(a->nodetype) {
 
@@ -85,6 +104,11 @@ void treefree(struct ast *a)
   case '-':
   case '*':
   case '/':
+  case 'm':
+  case 'c':
+  case 'o':
+  case 'p':
+  case 'n':
     treefree(a->r);
 
     /* one subtree */
@@ -96,24 +120,21 @@ void treefree(struct ast *a)
   case 'K':
     free(a);
     break;
-
   default: printf("internal error: free bad node %c\n", a->nodetype);
   }
 }
 
-void yyerror(char *s, ...)
+void yyerror(char* s, ...)
 {
-  va_list ap;
-  va_start(ap, s);
-
-  fprintf(stderr, "%d: error: ", yylineno);
-  vfprintf(stderr, s, ap);
-  fprintf(stderr, "\n");
+  printf("%d: error: ", yylineno);
+  printf("%s", s);
+  printf("\n");
 }
-
-int
 main()
 {
-  printf ("Hello, my master\ntype my a \"quit\" for my closing\n");
+  printf ("Hello, my master.\nType my a \"quit\" for my closing.\n");
+  mult = newast ('m', NULL, NULL);
+  printf("> ");
+  bracket_INDEX;
   return yyparse();
 }
